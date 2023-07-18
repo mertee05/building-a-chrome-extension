@@ -3,12 +3,24 @@ const inputEl = document.getElementById("input-el");
 const inputBtn = document.getElementById("input-btn");
 const ulEl = document.getElementById("ul-el");
 const deleteBtn = document.getElementById("delete-btn");
-const leadsFromLocalStorage = JSON.parse(localStorage.getItem("myLeads"));
+const leadsFromLocalStorageRaw = localStorage.getItem("myLeads");
+console.log("debug", leadsFromLocalStorageRaw);
+const leadsFromLocalStorage = JSON.parse(leadsFromLocalStorageRaw);
+const tabBtn = document.getElementById("tab-btn");
 
 if (leadsFromLocalStorage) {
   myLeads = leadsFromLocalStorage;
   render(myLeads);
 }
+
+tabBtn.addEventListener("click", function () {
+  console.log("debugtab");
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    myLeads.push(tabs[0].url);
+    localStorage.setItem("myLeads", JSON.stringify(myLeads));
+    render(myLeads);
+  });
+});
 
 function render(leads) {
   let listItems = "";
